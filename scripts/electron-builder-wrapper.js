@@ -28,6 +28,7 @@ const stripCSC = function (environment) {
  * @returns {string} - an `electron-builder` flag to build for the current platform, based on `process.platform`.
  */
 const getPlatformFlag = function () {
+    return '--windows';
     switch (process.platform) {
     case 'win32': return '--windows';
     case 'darwin': return '--macos';
@@ -46,9 +47,9 @@ const runBuilder = function (targetGroup) {
     // the appx build fails if CSC_* or WIN_CSC_* variables are set
     const shouldStripCSC = (targetGroup === 'appx');
     const childEnvironment = shouldStripCSC ? stripCSC(process.env) : process.env;
-    if ((targetGroup === 'nsis') && !(childEnvironment.CSC_LINK || childEnvironment.WIN_CSC_LINK)) {
-        throw new Error(`NSIS build requires CSC_LINK or WIN_CSC_LINK`);
-    }
+//    if ((targetGroup === 'nsis') && !(childEnvironment.CSC_LINK || childEnvironment.WIN_CSC_LINK)) {
+//        throw new Error(`NSIS build requires CSC_LINK or WIN_CSC_LINK`);
+//    }
     const platformFlag = getPlatformFlag();
     const command = `electron-builder ${platformFlag} ${targetGroup}`;
     console.log(`running: ${command}`);
@@ -64,6 +65,7 @@ const runBuilder = function (targetGroup) {
  * one call to `runBuilder` for one or more build target(s).
  */
 const calculateTargets = function () {
+    return ['nsis', 'appx'];
     switch (process.platform) {
     case 'win32':
         // run in two passes so we can skip signing the appx
